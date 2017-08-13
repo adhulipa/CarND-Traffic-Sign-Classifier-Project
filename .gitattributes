@@ -2,3 +2,6 @@ traffic-signs-data filter=lfs diff=lfs merge=lfs -text
 lenet.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text
 lenet.index filter=lfs diff=lfs merge=lfs -text
 lenet.meta filter=lfs diff=lfs merge=lfs -text
+traffic-signs-data/test.p filter=lfs diff=lfs merge=lfs -text
+traffic-signs-data/train.p filter=lfs diff=lfs merge=lfs -text
+traffic-signs-data/valid.p filter=lfs diff=lfs merge=lfs -text
