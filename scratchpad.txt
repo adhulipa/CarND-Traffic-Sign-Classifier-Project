@@ -1,0 +1,218 @@
+
+
+# # Group data according to frequency of occurrence
+# sign_freq = df.groupby(['SignName', 'ClassId'])['ClassId'].count().reset_index(name='count').sort_values(['count'], ascending=True)
+# sign_freq[:5]
+
+# # From the graphs it looks like we have abou 1500-2000 items for the most common signs
+# # We have to generate fake data for the remaining items such that there at least 1500-2000 of them
+# sign_freq.sort_values(['count'], ascending=False)[:10]
+
+# # Find the images that need to be augmented.
+# sign_freq = pd.DataFrame(sign_freq)
+# top_10 = sign_freq[len(sign_freq):len(sign_freq)-10:-1]
+
+# top_10_min = top_10['count'].min()
+# top_10_max = top_10['count'].max()
+
+# # Find seed images from X_train that need to be augmented
+# augmentation_candidates = sign_freq[sign_freq['count'] < random.randint(top_10_min, top_10_max)]
+
+# classes = augmentation_candidates.ClassId.values
+# classes = classes.get_values()
+# # print(y_train)
+# # print(y_train[ y_train == classes])
+
+# sorted_indexes = np.argsort(y_train)
+# y_train_sorted = y_train[sorted_indexes]
+# selection_indexes = np.searchsorted(y_train_sorted, classes)
+# augmentation_candidate_images = X_train[selection_indexes]
+# augmentation_candidate_labels = y_train[selection_indexes]
+
+# assert all(y_signs.ClassId.values.get_values() == y_train)
+
+# # print(classes.get_values())
+# # print(top_10_min,top_10_max)
+# # print(classes)
+
+# # y_train
+
+# # # Number of new images required = next_int()
+# # next_int = lambda: random.randint(top_10['count'].min(), top_10['count'].max())
+# # print(next_int())
+# # num_required = next_int()
+
+# # samples = augmentation_candidates.sample(min(len(augmentation_candidates), num_required))
+
+# # print(samples)
+
+
+
+# def LeNet6(x):
+#     # Arguments used for tf.truncated_normal, randomly defines variables for the weights and biases for each layer
+#     mu = 0
+#     sigma = 0.1
+    
+#     # Layer 1: Convolutional. Input = 32x32x3. Output = 28x28x6.
+#     filter_depth = 24
+#     filter_shape = [3, 3, 3, filter_depth]
+#     weights_conv1 = tf.Variable(tf.truncated_normal(filter_shape, mean=mu, stddev=sigma))
+#     bias_conv1 = tf.Variable(tf.truncated_normal([filter_depth]))
+#     x = tf.nn.conv2d(x, weights_conv1, strides=[1, 1, 1, 1], padding='SAME')
+#     conv1 = tf.nn.bias_add(x, bias_conv1)
+
+#     # Activation.
+#     conv1 = tf.nn.relu(conv1)
+#     assert_shape((32,32,24), conv1)
+    
+#     # Pooling. Input = 32x32x24. Output = 16x16x24.
+#     conv1 = tf.nn.max_pool(conv1, ksize=[1,2,2,1], strides=[1,2,2,1], padding='VALID')
+#     assert_shape((16,16,24), conv1)
+
+#     # Layer 2: Convolutional. Input = 16x16x24. Output = 12x12x48.
+#     l2_in = conv1
+#     l2_filter_depth = 48
+#     l2_filter_shape = [5,5,24,l2_filter_depth]
+#     weights_conv2 = tf.Variable(tf.truncated_normal(l2_filter_shape, mean=mu, stddev=sigma))
+#     bias_conv2 = tf.Variable(tf.truncated_normal([l2_filter_depth]))
+#     conv2 = tf.nn.conv2d(l2_in, weights_conv2, strides=[1,1,1,1], padding='VALID')
+#     conv2 = tf.nn.bias_add(conv2, bias_conv2)
+    
+#     # Activation.
+#     conv2 = tf.nn.relu(conv2)
+#     assert_shape((12,12,48), conv2)
+        
+#     # Pooling. Input = 10x10x16. Output = 5x5x16.
+#     conv2 = tf.nn.max_pool(conv2, ksize=[1,2,2,1], strides=[1,1,1,1], padding='SAME')
+#     assert_shape((12,12,48), conv2)
+    
+#     # Layer 3 input 12x12x48 output 4x4x96
+#     filter_depth = 96
+#     w3 = tf.Variable(tf.truncated_normal([7,7,48,filter_depth], mean=mu, stddev=sigma))
+#     conv3 = tf.nn.conv2d(conv2, w3, strides=[1,1,1,1], padding='VALID')
+#     conv3 = tf.nn.bias_add(conv3, tf.Variable(tf.truncated_normal([filter_depth])))
+#     conv3 = tf.nn.relu(conv3)
+#     assert_shape((6,6,96), conv3)
+    
+#     # Maxpooling
+#     conv3 = tf.nn.max_pool(conv3, ksize=[1,2,2,1], strides=[1,2,2,1], padding='VALID')
+#     assert_shape((3,3,96),conv3)
+
+#     # Flatten. Input = 3x3x96. Output = 864.
+#     flat = tf.contrib.layers.flatten(conv3)
+    
+#     # Layer 4: Fully Connected. Input = 864. Output = 400.
+#     weights_fc_l3 = tf.Variable(tf.truncated_normal([864,400], mean=mu, stddev=sigma))
+#     bias_fc_l3 = tf.Variable(tf.truncated_normal([400]))
+#     fc1 = tf.add(bias_fc_l3, tf.matmul(flat,weights_fc_l3))
+    
+#     # Activation.
+#     fc1 = tf.nn.relu(fc1)
+
+#     # Layer 5: Fully Connected. Input = 400. Output = 120.
+#     weights_fc_l4 = tf.Variable(tf.truncated_normal([400,120], mean=mu, stddev=sigma))
+#     bias_fc_l4 = tf.Variable(tf.truncated_normal([120]))
+#     fc2 = tf.add(bias_fc_l4, tf.matmul(fc1, weights_fc_l4))
+    
+#     # Activation.
+#     fc2 = tf.nn.relu(fc2)
+
+#     # Layer 6, input 120 output 84
+#     fc2 = tf.matmul(fc2, tf.Variable(tf.truncated_normal([120,84]))) + tf.Variable(tf.truncated_normal([84]))
+#     fc2 = tf.nn.relu(fc2)
+    
+#     # Layer 6: Fully Connected. Input = 84. Output = 43.
+#     weights_out = tf.Variable(tf.truncated_normal([84,43], mean=mu, stddev=sigma))
+#     bias_out = tf.Variable(tf.truncated_normal([43]))
+#     logits = tf.add(tf.matmul(fc2,weights_out), bias_out)
+    
+#     return logits
+
+
+
+
+
+
+# ### Define your architecture here.
+# ### Feel free to use as many code cells as needed.
+# from tensorflow.contrib.layers import flatten
+
+# def LeNet6_gray(x):
+#     # Arguments used for tf.truncated_normal, randomly defines variables for the weights and biases for each layer
+#     mu = 0
+#     sigma = 0.1
+    
+#     # Layer 1: Convolutional. Input = 32x32x1. Output = 28x28x6.
+#     filter_depth = 24
+#     filter_shape = [3, 3, 1, filter_depth]
+#     weights_conv1 = tf.Variable(tf.truncated_normal(filter_shape, mean=mu, stddev=sigma))
+#     bias_conv1 = tf.Variable(tf.truncated_normal([filter_depth]))
+#     x = tf.nn.conv2d(x, weights_conv1, strides=[1, 1, 1, 1], padding='SAME')
+#     conv1 = tf.nn.bias_add(x, bias_conv1)
+
+#     # Activation.
+#     conv1 = tf.nn.relu(conv1)
+#     assert_shape((32,32,24), conv1)
+    
+#     # Pooling. Input = 32x32x24. Output = 16x16x24.
+#     conv1 = tf.nn.max_pool(conv1, ksize=[1,2,2,1], strides=[1,2,2,1], padding='VALID')
+#     assert_shape((16,16,24), conv1)
+
+#     # Layer 2: Convolutional. Input = 16x16x24. Output = 12x12x48.
+#     l2_in = conv1
+#     l2_filter_depth = 48
+#     l2_filter_shape = [5,5,24,l2_filter_depth]
+#     weights_conv2 = tf.Variable(tf.truncated_normal(l2_filter_shape, mean=mu, stddev=sigma))
+#     bias_conv2 = tf.Variable(tf.truncated_normal([l2_filter_depth]))
+#     conv2 = tf.nn.conv2d(l2_in, weights_conv2, strides=[1,1,1,1], padding='VALID')
+#     conv2 = tf.nn.bias_add(conv2, bias_conv2)
+    
+#     # Activation.
+#     conv2 = tf.nn.relu(conv2)
+#     assert_shape((12,12,48), conv2)
+        
+#     # Pooling. Input = 10x10x16. Output = 5x5x16.
+#     conv2 = tf.nn.max_pool(conv2, ksize=[1,2,2,1], strides=[1,1,1,1], padding='SAME')
+#     assert_shape((12,12,48), conv2)
+    
+#     # Layer 3 input 12x12x48 output 4x4x96
+#     filter_depth = 96
+#     w3 = tf.Variable(tf.truncated_normal([7,7,48,filter_depth], mean=mu, stddev=sigma))
+#     conv3 = tf.nn.conv2d(conv2, w3, strides=[1,1,1,1], padding='VALID')
+#     conv3 = tf.nn.bias_add(conv3, tf.Variable(tf.truncated_normal([filter_depth])))
+#     conv3 = tf.nn.relu(conv3)
+#     assert_shape((6,6,96), conv3)
+    
+#     # Maxpooling
+#     conv3 = tf.nn.max_pool(conv3, ksize=[1,2,2,1], strides=[1,2,2,1], padding='VALID')
+#     assert_shape((3,3,96),conv3)
+
+#     # Flatten. Input = 3x3x96. Output = 864.
+#     flat = tf.contrib.layers.flatten(conv3)
+    
+#     # Layer 4: Fully Connected. Input = 864. Output = 400.
+#     weights_fc_l3 = tf.Variable(tf.truncated_normal([864,400], mean=mu, stddev=sigma))
+#     bias_fc_l3 = tf.Variable(tf.truncated_normal([400]))
+#     fc1 = tf.add(bias_fc_l3, tf.matmul(flat,weights_fc_l3))
+    
+#     # Activation.
+#     fc1 = tf.nn.relu(fc1)
+
+#     # Layer 5: Fully Connected. Input = 400. Output = 120.
+#     weights_fc_l4 = tf.Variable(tf.truncated_normal([400,120], mean=mu, stddev=sigma))
+#     bias_fc_l4 = tf.Variable(tf.truncated_normal([120]))
+#     fc2 = tf.add(bias_fc_l4, tf.matmul(fc1, weights_fc_l4))
+    
+#     # Activation.
+#     fc2 = tf.nn.relu(fc2)
+
+#     # Layer 6, input 120 output 84
+#     fc2 = tf.matmul(fc2, tf.Variable(tf.truncated_normal([120,84]))) + tf.Variable(tf.truncated_normal([84]))
+#     fc2 = tf.nn.relu(fc2)
+    
+#     # Layer 6: Fully Connected. Input = 84. Output = 43.
+#     weights_out = tf.Variable(tf.truncated_normal([84,43], mean=mu, stddev=sigma))
+#     bias_out = tf.Variable(tf.truncated_normal([43]))
+#     logits = tf.add(tf.matmul(fc2,weights_out), bias_out)
+    
+#     return logits

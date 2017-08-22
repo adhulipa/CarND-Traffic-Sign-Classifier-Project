@@ -1,0 +1,68 @@
+# Alternate Model architecture
+
+# Yan Lecun Model described in Project's reference paper.
+# Idea: Use output of 1st stage & output of 2nd stage as input to fully-connected layer
+# http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf
+
+def Traffic_LeNet(x, keep_prob):
+    mu = 0
+    sigma = 0.1
+    
+    # 1st stage
+    conv = tf.nn.conv2d(input=x, 
+                        filter=tf.Variable(tf.truncated_normal(shape=[5,5,3,32], mean=mu, stddev=sigma)),
+                        strides=[1,1,1,1],
+                        padding='VALID')
+    conv = tf.nn.conv2d(input=conv,
+                        filter=tf.Variable(tf.truncated_normal(shape=[5,5,32,32], mean=mu, stddev=sigma)),
+                        strides=[1,1,1,1],
+                        padding='SAME')
+    conv = tf.nn.bias_add(conv, tf.Variable(tf.truncated_normal([32])))
+    conv = tf.nn.relu(conv)
+    conv1 = tf.nn.max_pool(value=conv,
+                           ksize=[1,2,2,1], 
+                           strides=[1,2,2,1], 
+                           padding='VALID')
+    conv1 = tf.nn.dropout(conv1, keep_prob)
+    assert_shape((14,14,32), conv1)
+
+    # 2nd stage
+    conv = tf.nn.conv2d(input=conv1,
+                       filter=tf.Variable(tf.truncated_normal(shape=[3,3,32,64], mean=mu, stddev=sigma)),
+                        strides=[1,1,1,1],
+                        padding='VALID')
+    conv = tf.nn.conv2d(input=conv,
+                       filter=tf.Variable(tf.truncated_normal(shape=[3,3,64,64], mean=mu, stddev=sigma)),
+                       strides=[1,1,1,1],
+                       padding='SAME')
+    conv = tf.nn.bias_add(conv, tf.Variable(tf.truncated_normal([64])))
+    conv = tf.nn.relu(conv)
+    conv2 = tf.nn.max_pool(value=conv,
+                          ksize=[1,2,2,1],
+                          strides=[1,2,2,1],
+                          padding='VALID')
+    assert_shape((6,6,64), conv2)
+
+    # Flatten outputs from both stages
+    flat1 = tf.contrib.layers.flatten(conv1)
+    flat2 = tf.contrib.layers.flatten(conv2)
+    flat = tf.concat(1, [flat1, flat2])
+    _, num_features = flat.get_shape()
+    assert((14*14*32 + 6*6*64) == num_features)
+    
+    # 1st Fully connected stage. Input = 8576. Ouput = 1024
+    flat = tf.matmul(flat, tf.Variable(tf.truncated_normal(shape=[8576, 1024], mean=mu, stddev=sigma))) + tf.Variable(tf.truncated_normal([1024]))
+    flat = tf.nn.relu(flat)
+    
+    # 2nd Fully connected stage. Input = 1024. Ouput = 256
+    flat = tf.matmul(flat, tf.Variable(tf.truncated_normal(shape=[1024, 256], mean=mu, stddev=sigma))) + tf.Variable(tf.truncated_normal([256]))
+    flat = tf.nn.relu(flat)
+            
+    # 3rd Fully connected stage. Input = 256. Ouput = 86
+    flat = tf.matmul(flat, tf.Variable(tf.truncated_normal(shape=[256, 86], mean=mu, stddev=sigma))) + tf.Variable(tf.truncated_normal([86]))
+    flat = tf.nn.relu(flat)
+    
+    # 6th Fully connected stage. Input = 86. Ouput = 43
+    logits = tf.matmul(flat, tf.Variable(tf.truncated_normal(shape=[86, 43], mean=mu, stddev=sigma))) + tf.Variable(tf.truncated_normal([43]))
+    
+    return logits
