@@ -1,4 +1,4 @@
-#**Traffic Sign Recognition** 
+# **Traffic Sign Recognition** 
 ## Aditya Dhulipala
 ### 08/21/2017
 
@@ -55,17 +55,19 @@ Number of testing examples = 12630
 Image data shape = (32, 32, 3)
 Number of classes = 43
 
+```
         ClassId              SignName
 count     34799                 34799
 unique       43                    43
 top           2  Speed limit (50km/h)
 freq       2010                  2010
+```
 
 #### 2. Include an exploratory visualization of the dataset.
 
 Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
 
-![alt text][./writeup_data/data-visualization.jpg]
+![alt text][https://github.com/adhulipa/CarND-Traffic-Sign-Classifier-Project/blob/master/writeup_data/data-visualization.jpg]
 
 ### Design and Test a Model Architecture
 
