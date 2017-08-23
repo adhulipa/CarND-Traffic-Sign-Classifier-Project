@@ -70,7 +70,7 @@ Here is an exploratory visualization of the data set.
 
 2. I plotted a histogram of occurrences to show how many example we have for each type of sign. You can see that this is not a uniform distribution. This is a very important observation. This bar chart highly influenced my data augmentation techniques. I'll shed more light on that in a later section.
 
-![Distribution of data](writeup_data/data-visualization.jpg)
+![Distribution of data](https://github.com/adhulipa/CarND-Traffic-Sign-Classifier-Project/blob/master/writeup_data/data-visualization.jpg)
 
 ### Design and Test a Model Architecture
 
@@ -85,73 +85,101 @@ As a first step, I decided to convert the images to grayscale because when it co
 
 Here is an example of a traffic sign image before and after grayscaling.
 
-![color and grayscale images](writeup_data/colorimg-grayscaleimg.jpg)
+![alt text][image2]
 
-As a last step, I normalized the image data because numeric values can vary wildly between similar images. It helps to train the network faster if we restrict them to be within a specific range without affecting the image itself.
+As a last step, I normalized the image data because ...
 
-I decided to generate additional data because this probably the single most important step of my pipeline that improved my network. The neural network works off of the numeric values that represent the image. However, we know that the traffic sign doesn't change drastically if it's a little to the left or right, or if it's sunny or dark or if we're looking at from an angle. (In fact, we'd be able to recognize most signs even if we were driving upside down. Haha (Definitely not a good idea though :)) 
-
-But even making these slight adjustments to the traffic sign would cause the numeric values representing it to vary significantly. Therefore, it helps our model build resillience to slight variations and help detect signs better.
-
-Initially, I planned to augment data such that all the signs would have equal examples. That is, I wanted to create a uniform distribution of the training examples. However, I later abandoned this idea after discussing this with other students in the term. I realized a important feature of our model should be to predict the sign accurately in the face of ambiguity. Having more examples of a sign (say 50 kph) over another (say 60kph) will lead the model to predict an new sign as being 50kph over 60kph with higher probability.
-
-This turned out to be very good judgement because in one of my previous runs of the project my model incorrectly predicted a new 60kph sign from the web as being 50kph.
+I decided to generate additional data because ... 
 
 To add more data to the the data set, I used the following techniques because ... 
 
 Here is an example of an original image and an augmented image:
 
-![Augmented image](writeup_data/augmented.jpg)
+![alt text][image3]
 
-The difference between the original data set and the augmented data set is the following. Notice that the distribution is largely the same as earlier but now we have nearly 3 times more examples of each image.
-![Difference between augmented & original set](writeup_data/augmented-dataset.jpg)
+The difference between the original data set and the augmented data set is the following ... 
 
 
-####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
+#### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
 My final model consisted of the following layers:
 
 | Layer         		|     Description	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| Input         		| 32x32x3 RGB image   							| 
-| Convolution 3x3     	| 1x1 stride, same padding, outputs 32x32x64 	|
+| Input         		| 32x32x1 Grayscale image   					| 
+| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x28 	|
 | RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
+| Max pooling	      	| 2x2 stride,  outputs 14x14x28 				|
+| Dropout   	      	| Prob of 0.9 		                         	|
+| Convolution 5x5	    | 1x1 stride, valid padding, outputs 10x10x32	|
+| RELU					|												|
+| Max pooling	      	| 2x2 stride,  outputs 5x5x32 		      		|
+| Dropout   	      	| Prob of 0.9 		                         	|
+| Fully connected		| 800 -> 400  									|
+| Dropout   	      	| Prob of 0.9 		                         	|
+| Fully connected		| 400 -> 120  									|
+| Fully connected		| 120 -> 84  									|
+| Fully connected		| 84 -> 43  									|
+| Softmax				|  _        									|
 |						|												|
-|						|												|
- 
 
 
-####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an ....
+#### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
+I went through at least a dozen iteration of tuning these parameters. You can find various values I tried in my project's git history.
+
+Finally I converged on using:
+* 20 EPOCHS
+* * I experimented with values from 15-50. It looked like 20 was pretty much where point at which the model converged. Further improvements to accuracy can be made through a more complex model.
+
+* 120 samples as batch size
+* * It was interesting to learn that model performance was inversely proportional to batch size. I ran iterations where I tuned thisfrom 64-512. Choosing a batch size of 128 was pretty good. I cranked it down to 120 just for kicks.
+
+* A learning rate of 0.0009
+* * I tried out various values from 0.0001 to 0.001. (Side note: Just for laughs, I even tried a setting of 0.1 and saw that the loss kept increasing!)
+
+* I used an AdamOptimizer to minimize the loss function.
+
+#### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
+* training set accuracy of 96.7%
+* validation set accuracy of 95.9%
+* test set accuracy of 94%
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
+* * I extended the LeNet arch. to have 9 layers with 6 layers of convolutions and 3 fully connected layers. Each convlution layer had two convolution operations with relu activate, max pooling and dropout of 0.5
+* * I chose this arch because I belived that increasing the coplexity of the network arbitrarily would help performance. I was wrong! I later converged to using a well known architecture such as LeNet and tweaked it to suit this project. 
+
 * What were some problems with the initial architecture?
+* * The validation accuracy never rose over 10%
+* * The major problem with this architecture was that the dropout was way too aggressive. Dropping 50% of the weights led to a situation where the model could not rely on any weights for most of the time and thus led to underfitting.
+* * There were many other problems as well (such as complexity of the model for the sake of complexity)
 * How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
+* * I first made the change of using a simple model arch with effective filter sizes to capture enough depth-of-field in the images. In my initial arch I had smaller but many filters, i.e. I had 3 3x3 filters. I later changed this to have 2 5x5 filters.
+* * I also noticed that my model slightly overfitting (training accuracy at 97% vs validation accuracy at 92%). To combat this I introduced dropout into the model at each of the first 3 layers (i.e. 2 convs & 1 fully-connected). My reasoning behind this is that these 3 layers among them have the bulk of the weights parameters. The combinations from the sheer orders of the matrices implies that if there were any weights that disproportionately influenced the model then it is very likely that they are from these 3 layers. I introduced dropout with a keep_prob of 90% and this tremendously helped correct overfitting in my model.
+* * The major bulk of the improving the validation accuracy was by efficient pre-processing of the data. Specifically, having normalized and augmented data helped with improving the model performance.
 * Which parameters were tuned? How were they adjusted and why?
+* * I tuned number of layers, epocs, batch size, dropout keep_prob, convolution filter sizes. 
+* * The main adjustments that helped were from the number of layers and filter sizes. I adjusted number of layers to be a tweaked version of LeNet. The reasoning behind this is that complexity (of the model) for the sake of complexity is not a good idea. Adapting a model that is known to work well with certain dimensions of input helps.
+* I've described how I adjusted the other params in prior sections of this doc.
+
 * What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
+* * The two most important design choices were the use of larger filter (i.e. 5x5) with large depth (i.e. 28) and the introduction of dropout. I've described how these two choices affected my performance in the prior question.
 
 If a well known architecture was chosen:
 * What architecture was chosen?
+* * I used a modified LeNet
 * Why did you believe it would be relevant to the traffic sign application?
+* * LeNet works well with images of this size. I also read the paper referred to in the project description and the authors presented results that justified the effectiveness of this architecture (http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf)
 * How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
- 
+ * * A high accuracy on test images (i.e. images that the model has never seen before) and being able to accurately predict the class of the traffic sign imply that the model is working well.
 
 ###Test a Model on New Images
 
-####1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
+#### 1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
 
 Here are five German traffic signs that I found on the web:
 
