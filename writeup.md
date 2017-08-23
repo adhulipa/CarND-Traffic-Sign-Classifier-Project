@@ -65,31 +65,46 @@ freq       2010                  2010
 
 #### 2. Include an exploratory visualization of the dataset.
 
-Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
+Here is an exploratory visualization of the data set. 
+1. The first row of images depict the signs themselves. It's easy to see how certain signs may be hard to distinguish from each other because of image resolution, brigtness, camera angle and many other features.
 
-![alt text][https://github.com/adhulipa/CarND-Traffic-Sign-Classifier-Project/blob/master/writeup_data/data-visualization.jpg]
+2. I plotted a histogram of occurrences to show how many example we have for each type of sign. You can see that this is not a uniform distribution. This is a very important observation. This bar chart highly influenced my data augmentation techniques. I'll shed more light on that in a later section.
+
+![Distribution of data](writeup_data/data-visualization.jpg)
 
 ### Design and Test a Model Architecture
 
 #### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
-As a first step, I decided to convert the images to grayscale because ...
+I experimented with various technique:
+* Color space transforms such as YUV, YCrCb and Grayscale
+* Normalization technique using GlobalContrastNorm & a simple norm function suggested in the project
+
+As a first step, I decided to convert the images to grayscale because when it comes to traffic signs, what's most interesting are the edges. Although many traffic signs have distincive colors, for the most part they range from a set of 3-4 colors. If our goal was to classify signs into 3-4 specific classes (such as "Regulatory Sign", "Warning sign" etc) then color would be a useful feature to train against. Instead, our goal here is to classify at a higher level of granularity (i.e. not just whether it's a warning-sign but we need to distiguish between a "railroad crossing" sign from a "deer crossing" sign. Hence, color is not useful but rather edges.
+
 
 Here is an example of a traffic sign image before and after grayscaling.
 
-![alt text][image2]
+![color and grayscale images](writeup_data/colorimg-grayscaleimg.jpg)
 
-As a last step, I normalized the image data because ...
+As a last step, I normalized the image data because numeric values can vary wildly between similar images. It helps to train the network faster if we restrict them to be within a specific range without affecting the image itself.
 
-I decided to generate additional data because ... 
+I decided to generate additional data because this probably the single most important step of my pipeline that improved my network. The neural network works off of the numeric values that represent the image. However, we know that the traffic sign doesn't change drastically if it's a little to the left or right, or if it's sunny or dark or if we're looking at from an angle. (In fact, we'd be able to recognize most signs even if we were driving upside down. Haha (Definitely not a good idea though :)) 
+
+But even making these slight adjustments to the traffic sign would cause the numeric values representing it to vary significantly. Therefore, it helps our model build resillience to slight variations and help detect signs better.
+
+Initially, I planned to augment data such that all the signs would have equal examples. That is, I wanted to create a uniform distribution of the training examples. However, I later abandoned this idea after discussing this with other students in the term. I realized a important feature of our model should be to predict the sign accurately in the face of ambiguity. Having more examples of a sign (say 50 kph) over another (say 60kph) will lead the model to predict an new sign as being 50kph over 60kph with higher probability.
+
+This turned out to be very good judgement because in one of my previous runs of the project my model incorrectly predicted a new 60kph sign from the web as being 50kph.
 
 To add more data to the the data set, I used the following techniques because ... 
 
 Here is an example of an original image and an augmented image:
 
-![alt text][image3]
+![Augmented image](writeup_data/augmented.jpg)
 
-The difference between the original data set and the augmented data set is the following ... 
+The difference between the original data set and the augmented data set is the following. Notice that the distribution is largely the same as earlier but now we have nearly 3 times more examples of each image.
+![Difference between augmented & original set](writeup_data/augmented-dataset.jpg)
 
 
 ####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
