@@ -189,27 +189,34 @@ If a well known architecture was chosen:
 
 Here are five German traffic signs that I found on the web:
 
-![alt text][image4] ![alt text][image5] ![alt text][image6] 
-![alt text][image7] ![alt text][image8]
+![signs from the internet](writeup_data/websigns.png)
 
-The first image might be difficult to classify because ...
+The first image might be difficult to classify because of the low resolution it kinda looks like a general information sign.
 
-####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
+An interesting story about the second sign is that the first time I trained my current model and then ran it on this sign, it was classified (incorrectly) as 50kph. I figured out that this was because it is kinda easy (for a machine) to get confused between 50kph & 60kph signs. But given that the model had seen many more example of the 50kph sign it was biased to guess as 50kph.
+
+Of course it is not a problem with my model now because I ran it once more and now my model is classifiying this sign correctly. This is very likely due to the random initialization of the weights between runs.
+
+#### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
 Here are the results of the prediction:
 
+![signs from the internet](writeup_data/websigns-prediction.png)
+
 | Image			        |     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| Stop Sign      		| Stop sign   									| 
-| U-turn     			| U-turn 										|
-| Yield					| Yield											|
-| 100 km/h	      		| Bumpy Road					 				|
-| Slippery Road			| Slippery Road      							|
+| Pedestrians      		| General caution    									| 
+| 60kph     			| 60kph 										|
+| 30kph					| 30kph											|
+| Stop	      		| Stop					 				|
+| Bumpy road			| Dangerous curve      							|
 
 
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
+The model was able to correctly guess 3 of the 5 traffic signs, which gives an accuracy of 60%. This compares favorably to the accuracy on the test set of 94%.
 
-####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
+Please note that I deliberately picked these 5 images to contrast how well or poorly my model performs. I ran the model on 14 images from the web and found that it predicted 8/14 of pretty accurately.
+
+#### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
 The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
 
@@ -217,16 +224,14 @@ For the first image, the model is relatively sure that this is a stop sign (prob
 
 | Probability         	|     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| .60         			| Stop sign   									| 
-| .20     				| U-turn 										|
-| .05					| Yield											|
-| .04	      			| Bumpy Road					 				|
-| .01				    | Slippery Road      							|
+| 0.83      		| General caution    									| 
+| 0.97     			| 60kph 										|
+| 0.62					| 30kph											|
+| 0.99	      		| Stop					 				|
+| 0.83			| Dangerous curve      							|
 
 
-For the second image ... 
+I've already shown the bar plot visualzing the top probabilities for each of these images.
+It is interesting to note how confident the model is when predicting the stop sign (99%). This is because of the distinctive nature of the sign itself and also because of the copious number of examples through augmentation.
 
-### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
-####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
-
-
+It's also interesting to note that for the 30kph sign, it predicted that with only 62% confidence but it was still predicted accurately. This is because this particular 30kph sign is slightly different from the 30kph signs I trained the model against. Most of the 30kph signs did not have piece of text at the bottom that says "ZONE". Most of example we trained the model against were circular boards with the number "30" inside them. The appearance of "ZONE" at the bottom threw off the model and that is why it's confidence is lower.
