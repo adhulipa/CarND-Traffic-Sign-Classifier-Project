@@ -70,7 +70,7 @@ Here is an exploratory visualization of the data set.
 
 2. I plotted a histogram of occurrences to show how many example we have for each type of sign. You can see that this is not a uniform distribution. This is a very important observation. This bar chart highly influenced my data augmentation techniques. I'll shed more light on that in a later section.
 
-![Distribution of data](https://github.com/adhulipa/CarND-Traffic-Sign-Classifier-Project/blob/master/writeup_data/data-visualization.jpg)
+![Distribution of data](writeup_data/data-visualization.jpg)
 
 ### Design and Test a Model Architecture
 
@@ -85,20 +85,26 @@ As a first step, I decided to convert the images to grayscale because when it co
 
 Here is an example of a traffic sign image before and after grayscaling.
 
-![alt text][image2]
+![color and grayscale images](writeup_data/colorimg-grayscaleimg.jpg)
 
-As a last step, I normalized the image data because ...
+As a last step, I normalized the image data because numeric values can vary wildly between similar images. It helps to train the network faster if we restrict them to be within a specific range without affecting the image itself.
 
-I decided to generate additional data because ... 
+I decided to generate additional data because this is probably the single most important step of my pipeline that improved my network. The neural network works off of the numeric values that represent the image. However, we know that the traffic sign doesn't change drastically if it's a little to the left or right, or if it's sunny or dark or if we're looking at from an angle. (In fact, we'd be able to recognize most signs even if we were driving upside down. Haha (Definitely not a good idea though :))
 
+But even making these slight adjustments to the traffic sign would cause the numeric values representing it to vary significantly. Therefore, it helps our model build resillience to slight variations and help detect signs better.
+
+Initially, I planned to augment data such that all the signs would have equal examples. That is, I wanted to create a uniform distribution of the training examples. However, I later abandoned this idea after discussing this with other students in the term. I realized a important feature of our model should be to predict the sign accurately in the face of ambiguity. Having more examples of a sign (say 50 kph) over another (say 60kph) will lead the model to predict an new sign as being 50kph over 60kph with higher probability.				
+
+This turned out to be very good judgement because in one of my previous runs of the project my model incorrectly predicted a new 60kph sign from the web as being 50kph.
 To add more data to the the data set, I used the following techniques because ... 
 
 Here is an example of an original image and an augmented image:
 
-![alt text][image3]
+![Augmented image](writeup_data/augmented.jpg)
 
-The difference between the original data set and the augmented data set is the following ... 
+The difference between the original data set and the augmented data set is the following. Notice that the distribution is largely the same as earlier but now we have nearly 3 times more examples of each image.
 
+![Difference between augmented & original set](writeup_data/augmented-dataset.jpg)		
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
