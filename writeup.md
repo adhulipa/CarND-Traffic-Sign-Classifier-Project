@@ -29,6 +29,69 @@ The goals / steps of this project are the following:
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
 
+#### Files Submitted 
+CRITERIA
+Submission Files
+
+The project submission includes all required files:
+* Traffic_Sign_Classifier.ipynb - My project file
+* writeup.md - A description of the work I did
+* report.html - An html report of my project
+
+#### Dataset Exploration
+CRITERIA
+MEETS SPECIFICATIONS
+Dataset Summary
+
+The submission includes a basic summary of the data set.
+* I reported the quentity of each of the requested fields
+
+Exploratory Visualization
+The submission includes an exploratory visualization on the dataset.
+* I plotted a random subset of images from the training set
+* I plotted a histogram ditribution of the dataset
+
+#### Design and Test a Model Architecture
+CRITERIA
+MEETS SPECIFICATIONS
+Preprocessing
+The submission describes the preprocessing techniques used and why these techniques were chosen.
+* I described how I converted images to grayscale, normalized using a simple formula and more details in the section below
+
+Model Architecture
+
+The submission provides details of the characteristics and qualities of the architecture, including the type of model used, the number of layers, and the size of each layer. Visualizations emphasizing particular qualities of the architecture are encouraged.
+* I described that I based my model on LeNet. I tweaked the number of layers, filter size, and used dropout layers.
+
+Model Training
+
+The submission describes how the model was trained by discussing what optimizer was used, batch size, number of epochs and values for hyperparameters.
+* I described that I based this on the LeNet model. I used the adam optimizer to minimize the cost function.  I also described how I tuned all the various hyper parameters, and their effects, such as EPOCHS, BATCH_SIZE etc.
+
+Solution Approach
+
+The submission describes the approach to finding a solution. Accuracy on the validation set is 0.93 or greater.
+* My validation accuracy is 0.959
+
+#### Test a Model on New Images
+CRITERIA
+MEETS SPECIFICATIONS
+Acquiring New Images
+
+The submission includes five new German Traffic signs found on the web, and the images are visualized. Discussion is made as to particular qualities of the images or traffic signs in the images that are of interest, such as whether they would be difficult for the model to classify.
+* I described this in my writeup below. I talked about how image resolution and minor variations in signboards themselves can throw off the model
+
+Performance on New Images
+
+The submission documents the performance of the model when tested on the captured images. The performance on the new images is compared to the accuracy results of the test set.
+* I described the performance of my model in the relevant section below. 
+* I did compare it against the test accuracy. Please note that I specifically chose 5 images such that there were at least 2 negative cases. This is so that I could talk about the difficulties my model faces and potential avenues to improve the model.
+
+Model Certainty - Softmax Probabilities
+
+The top five softmax probabilities of the predictions on the captured images are outputted. The submission discusses how certain or uncertain the model is of its predictions.
+* I visualzied the confidence levels and also spoke about a few interesting observations.
+
 ---
 ### Writeup / README
 
