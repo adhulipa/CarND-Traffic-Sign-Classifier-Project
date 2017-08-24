@@ -29,20 +29,15 @@ The goals / steps of this project are the following:
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
 
-#### Files Submitted 
-CRITERIA
-Submission Files
+#### Criteria 1. Files Submitted 
 
 The project submission includes all required files:
 * Traffic_Sign_Classifier.ipynb - My project file
 * writeup.md - A description of the work I did
 * report.html - An html report of my project
 
-#### Dataset Exploration
-CRITERIA
-MEETS SPECIFICATIONS
+#### Criteria 2. Dataset Exploration
 Dataset Summary
-
 The submission includes a basic summary of the data set.
 * I reported the quentity of each of the requested fields
 
@@ -51,9 +46,7 @@ The submission includes an exploratory visualization on the dataset.
 * I plotted a random subset of images from the training set
 * I plotted a histogram ditribution of the dataset
 
-#### Design and Test a Model Architecture
-CRITERIA
-MEETS SPECIFICATIONS
+#### Criteria 3. Design and Test a Model Architecture
 Preprocessing
 The submission describes the preprocessing techniques used and why these techniques were chosen.
 * I described how I converted images to grayscale, normalized using a simple formula and more details in the section below
@@ -73,9 +66,7 @@ Solution Approach
 The submission describes the approach to finding a solution. Accuracy on the validation set is 0.93 or greater.
 * My validation accuracy is 0.959
 
-#### Test a Model on New Images
-CRITERIA
-MEETS SPECIFICATIONS
+#### Criteria 4. Test a Model on New Images
 Acquiring New Images
 
 The submission includes five new German Traffic signs found on the web, and the images are visualized. Discussion is made as to particular qualities of the images or traffic signs in the images that are of interest, such as whether they would be difficult for the model to classify.
